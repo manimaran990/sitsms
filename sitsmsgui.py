@@ -27,6 +27,8 @@ class Sitsms(QtGui.QWidget):
         self.messageEdit.move(80,60);
 
         self.sendbtn = QtGui.QPushButton("send",self)
+        self.sendbtn.setStyleSheet("QPushButton:pressed { background-color: green }"
+                      "QPushButton:released { background-color: gray }" )
         quitbtn = QtGui.QPushButton("Exit",self)
 
         self.sendbtn.clicked.connect(self.buttonClicked)
@@ -54,7 +56,6 @@ class Sitsms(QtGui.QWidget):
 	    if msglen>145:
 	        QtGui.QMessageBox.information(self,'info',"your message is trimmed to 145 chars",1)
 	    message = self.messageEdit.toPlainText()[:145]
-            self.number.setText("wait..")
 	    sitsms.loginsite()
 	    sitsms.sendsms(num,message)
 	    QtGui.QMessageBox.information(self,'info','Message delivered to '+num,1)
