@@ -13,43 +13,51 @@ class Sitsms(QtGui.QWidget):
 
     def initUI(self):
 
-        number = QtGui.QLabel("Number ")
-        message = QtGui.QLabel("Message ")
+        number = QtGui.QLabel("Number ",self)
+        number.move(20,20);
 
-        self.numberEdit = QtGui.QLineEdit()
-        self.messageEdit = QtGui.QTextEdit()
+        message = QtGui.QLabel("Message ",self)
+        message.move(20,60);
 
-        sendbtn = QtGui.QPushButton("send")
-        quitbtn = QtGui.QPushButton("Exit")
+        self.numberEdit = QtGui.QLineEdit(self)
+        self.numberEdit.resize(190,24);
+        self.numberEdit.move(80,20);
+        self.messageEdit = QtGui.QTextEdit(self)
+        self.messageEdit.resize(220,200)
+        self.messageEdit.move(80,60);
 
-        grid = QtGui.QGridLayout()
-        grid.setSpacing(10)
+        self.sendbtn = QtGui.QPushButton("send",self)
+        quitbtn = QtGui.QPushButton("Exit",self)
 
-        grid.addWidget(number,1,0)
-        grid.addWidget(self.numberEdit,1,1)
-
-        grid.addWidget(message,2,0)
-        grid.addWidget(self.messageEdit,2,1,3,1)
-
-        sendbtn.clicked.connect(self.buttonClicked)
-        grid.addWidget(sendbtn,5,0)
+        self.sendbtn.clicked.connect(self.buttonClicked)
+        self.sendbtn.move(80,280)
 
         quitbtn.clicked.connect(QtCore.QCoreApplication.instance().quit)
-        quitbtn.resize(50,50)
-        grid.addWidget(quitbtn,5,1)
+        quitbtn.move(200,280)
 
-        self.setLayout(grid)
-
-        self.setGeometry(300,300,350,300)
+        self.setGeometry(300,350,320,320)
+        self.setFixedSize(320,320)
         self.setWindowTitle('SitSms')
         self.show()
 
+
     def buttonClicked(self):
-        num = self.numberEdit.text()
-        message = self.messageEdit.toPlainText()
-        sitsms.loginsite()
-        sitsms.sendsms(num,message)
-        QtGui.QMessageBox.information(self,'info','Message delivered to '+num,1)
+        numlen = len(self.numberEdit.text())
+        msglen = len(self.messageEdit.toPlainText())
+
+        if numlen==0:
+            QtGui.QMessageBox.information(self,'info',"please fill your number",1)
+        elif numlen>10:
+            QtGui.QMessageBox.information(self,'info',"number count must be 10 digits",1)
+	else:
+	    num = self.numberEdit.text()
+	    if msglen>145:
+	        QtGui.QMessageBox.information(self,'info',"your message is trimmed to 145 chars",1)
+	    message = self.messageEdit.toPlainText()[:145]
+            self.number.setText("wait..")
+	    sitsms.loginsite()
+	    sitsms.sendsms(num,message)
+	    QtGui.QMessageBox.information(self,'info','Message delivered to '+num,1)
 
 def main():
     app = QtGui.QApplication(sys.argv)
